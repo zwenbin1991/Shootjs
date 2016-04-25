@@ -20,26 +20,26 @@
 })(this, function (root, Shootjs) {
     var slice = Array.prototype.slice;
     var toString = Object.prototype.toString;
+    var eventSplitter = /\s+/;
 
     /**
      * 遍历数组或者纯对象
      *
-     * @static
-     * @param {Boolean} sign 标记是否支持回调函数返回中断
+     * @param {Function} callback 回调函数
+     * @param {Boolean} sign 标记是否支持回调函数返回中断 [可选]
      *   说明：0 => 不支持; 1 => 支持;
      *         default => 0;
-     * @param {Function} callback 回调函数
      * @return {Function}
      */
-    Shootjs._each = function (sign, callback) {
+    var each = function (callback, sign) {
         sign != void 0 || (sign = 0);
 
         return function (array) {
-            var isArray = Shootjs.isArray(array);
-            var solid = isArray ? array : Object.keys(array), key, value;
+            var checkArray = isArray(array);
+            var solid = checkArray ? array : Object.keys(array), key, value;
 
             for (var i = 0, length = solid.length; i < length; i++) {
-                key = isArray ? i : solid[i];
+                key = checkArray ? i : solid[i];
                 value = solid[key];
 
                 if (sign) {
@@ -54,13 +54,12 @@
     /**
      * 扩展
      *
-     * @static
      * @param {Object} target 源对象
      * @return {Boolean}
      */
-    Shootjs._extend = function (target) {
+    var extend = function (target) {
         var copys = slice.call(arguments, 1);
-        var iteratee = Shootjs._each(function (value) {
+        var iteratee = each(function (value) {
             for (var key in value) {
                 target[key] = value[key];
             }
@@ -77,24 +76,80 @@
     /**
      * 是否是数组
      *
-     * @static
      * @param {Array} array 数组
      * @return {Boolean}
      */
-    Shootjs.isArray = function (array) {
+    var isArray = function (array) {
         return toString.call(array).slice(8, -1).toLowerCase() === 'array';
     };
 
     /**
      * 是否是纯对象
      *
-     * @static
      * @param {Object} object 纯对象
      * @return {Boolean}
      */
-    Shootjs.isPlainObject = function (object) {
-        return typeof object === 'object' && !Shootjs.isArray(object) && object != root && !object.nodeType;
+    var isPlainObject = function (object) {
+        return typeof object === 'object' && !isArray(object) && object != root && !object.nodeType;
     };
+
+    var module = (function () {
+        return {
+            /**
+             * 函数上下文代理
+             *
+             * @param {Object} context 上下文
+             * @param {Function} callback 函数
+             */
+            proxy: function (context, callback) {
+                var args = slice.call(arguments, 2);
+
+                return function () {
+                    return callback.apply(context, args.concat(slice.call(arguments)));
+                };
+            },
+
+            /**
+             * 派生子类
+             *
+             * @param {Object} protoProps 子类原型属性
+             * @return {Function}
+             */
+            fork: function (protoProps) {
+                var parent = this;
+                var child = function () {
+                    return parent.apply(this, arguments);
+                };
+
+                // 创建临时类
+                var tempClass = function () {};
+                tempClass.prototype = parent.prototype;
+
+                // 继承
+                child.prototype = new tempClass;
+                child.prototype.constructor = child;
+
+                // 通过protoProps扩展原型方法
+                extend(child.prototype, protoProps);
+
+                child.__super__ = parent.prototype;
+
+                return child;
+            }
+        };
+    })();
+
+    var Event = Shootjs.Event = {
+        on: function (eventName, callback, context) {
+            var eventNames = eventSplitter.test(eventName) ? eventName.split(eventSplitter) : [eventName];
+            var iteratee = each(function (evtName) {
+
+            });
+
+        }
+    };
+
+
 
     return Shootjs;
 });
