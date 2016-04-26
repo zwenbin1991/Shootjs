@@ -1,0 +1,11 @@
+扩展backbone功能
+1、自动重载view的render函数；
+2、view执行时序
+3、提供一些可通用的view
+
+backbone的view功能
+1、设定el和tagname
+2、设置template
+3、设置事件监听器
+4、设置初始化函数，连接collection和model
+5、render，将数据渲染到template中

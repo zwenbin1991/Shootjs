@@ -74,13 +74,23 @@
     };
 
     /**
+     * 获取类型
+     *
+     * @param {Type} type 值
+     * @return {Boolean}
+     */
+    var getType = function (type) {
+        return toString.call(type).slice(8, -1).toLowerCase();
+    };
+
+    /**
      * 是否是数组
      *
      * @param {Array} array 数组
      * @return {Boolean}
      */
     var isArray = function (array) {
-        return toString.call(array).slice(8, -1).toLowerCase() === 'array';
+        return getType(array) === 'array';
     };
 
     /**
@@ -91,6 +101,16 @@
      */
     var isPlainObject = function (object) {
         return typeof object === 'object' && !isArray(object) && object != root && !object.nodeType;
+    };
+
+    /**
+     * 是否是字符串
+     *
+     * @param {String} string 字符串
+     * @return {Boolean}
+     */
+    var isString = function (string) {
+        return getType(string) === 'string';
     };
 
     var module = (function () {
@@ -140,11 +160,38 @@
     })();
 
     var Event = Shootjs.Event = {
-        on: function (eventName, callback, context) {
-            var eventNames = eventSplitter.test(eventName) ? eventName.split(eventSplitter) : [eventName];
-            var iteratee = each(function (evtName) {
+        addEventListener: function (eventName, callback, context) {
+            var eventNames, iteratee, events;
+
+            if (isString(eventName)) eventNames = eventName.split(eventSplitter);
+
+            iteratee = each(module.proxy(this, function (evtName) {
+                (events = this._events || (this._events = {}))[evtName] || (events[evtName] = []).push({
+                    evtName: evtName,
+                    handle: callback,
+                    context: context || root
+                });
+            }));
+
+            iteratee(eventNames);
+        },
+
+        removeEventListener: function (eventName, callback) {
+            var args = slice.call(arguments), iteratee, eventNames, events;
+
+            if (!args.length) {
+                this._events = {};
+                return this;
+            }
+
+            eventNames = eventName.split(eventSplitter);
+            iteratee = each(function (evtName) {
+                events = [];
+
 
             });
+
+            iteratee(eventNames);
 
         }
     };
