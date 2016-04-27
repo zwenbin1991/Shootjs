@@ -10,6 +10,8 @@
 
 const slice = Array.prototype.slice;
 const toString = Object.prototype.toString;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const keys = Object.keys;
 const eventSplitter = /\s+/;
 
 /**
@@ -48,6 +50,10 @@ const extend = (target, ...copys) => {
     let iteratee = each(object => {
         for (let key in object) target[key] = object[key];
     });
+
+    iteratee(copys);
+
+    return target;
 };
 
 export { extend };
@@ -64,6 +70,18 @@ const proxy = (context, callback, ...args) =>
         callback.apply(context, args.concat(params));
 
 export { proxy };
+
+/**
+ * 生成唯一值
+ */
+const unique = () => {
+    let idCount = 0;
+
+    return prefix =>
+        prefix ? prefix + (++idCount) : ++idCount;
+};
+
+export const uniqueId = unique();
 
 /**
  * 获取类型
@@ -119,3 +137,43 @@ const isNothing = type =>
     type === void 0 || type === null;
 
 export { isNothing };
+
+/**
+ * 比较值是否相等
+ */
+const isEqual = (a, b) => {
+    // 简单类型比较
+    // 注意 0、-0的比较
+    if (a === b) return a !== 0 || 1 / a === 1 / b;
+
+    var type = getType(a), iteratee;
+
+    // 复杂类型比较
+    if (type === 'regexp') return '' + a === '' + b;
+    if (type === 'date') return  +a === +b;
+
+    // 数组比较
+    // 首先比较数组长度是否一致
+    if (isArray(a) && isArray(b)) {
+        if (a.length !== b.length) return false;
+
+        iteratee = each((value, index) =>
+            isEqual(value, b[index]), 1);
+
+        return iteratee(a);
+    }
+
+    // 纯对象比较
+    if (isPlainObject(a) && isPlainObject(b)) {
+        if (keys(a).length !== keys(b).length) return false;
+
+        iteratee = each((value, key) =>
+            hasOwnProperty.call(b, key) && isEqual(value, b[key]), 1);
+
+        return iteratee(a);
+    }
+
+    return false;
+};
+
+export { isEqual };
