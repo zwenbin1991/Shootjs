@@ -108,3 +108,14 @@ const isString = string =>
     getType(string) === 'string';
 
 export { isString };
+
+/**
+ * 是否为空
+ *
+ * @param {Type} type 值
+ * @return {Boolean}
+ */
+const isNothing = type =>
+    type === void 0 || type === null;
+
+export { isNothing };
