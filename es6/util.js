@@ -9,7 +9,6 @@ const slice = Array.prototype.slice;
 const toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const keys = Object.keys;
-const eventSplitter = /\s+/;
 
 /**
  * 遍历数组或者纯对象
