@@ -1,10 +1,7 @@
-/**
- * @name model.js
- * @description shootjs的model类
- * @author 法克@163.com
- * @date 2016-4-27
- * @version 1.0.0
- */
+// Shootjs.js
+// author: 法克
+// email: 法克@163.com
+// MIT license
 
 'use strict';
 
@@ -35,7 +32,7 @@ util.extend(Model.prototype, event, {
     },
 
     set(name, value, option) {
-        var attrs, attr, dynamic, unset, changes, iteratee, prev, current;
+        var attrs, dynamic, unset, changes, iteratee, prev, current;
 
         if (util.isPlainObject(name)) {
             attrs = name;
@@ -51,23 +48,35 @@ util.extend(Model.prototype, event, {
         // 是否是删除操作
         unset = !!option.unset;
         prev = this.previousAttributes = this.toJSON();
-        current = this.toJSON();
-        iteratee = util.each(function (val, key) {
+        current = this.attributes;
+        iteratee = util.each((val, key) => {
             // 记录改变的key
             if (!util.isEqual(val, current[key])) changes.push(key);
+
+            unset ? delete current[key] : (current[key] = val);
         });
 
         this.identify in attrs && (this.id = attrs[this.identify]);
 
+        if (dynamic) {
+            iteratee = each(key => {
+                this.trigger('change:' + key, this, current[key]);
+            });
+        }
 
+        return this;
     },
 
-    clear() {
+    clear(option) {
+        var attr = {};
+        var iteratee = each((value, key) => {
+            attr[key] = void 0;
+        });
 
+        iteratee(this.attributes);
+
+        return this.set(attr, util.extend({}, option, { unset: true }))
     }
-
-
-
 });
 
 export { Model };

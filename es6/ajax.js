@@ -1,3 +1,4 @@
-/**
- * Created by zengwenbin on 2016/4/27.
- */
+// Shootjs.js
+// author: 法克
+// email: 法克@163.com
+// MIT license

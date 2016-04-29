@@ -1,10 +1,7 @@
-/**
- * @name event.js
- * @description 事件管理器
- * @author 法克@163.com
- * @date 2016-4-26
- * @version 1.0.0
- */
+// Shootjs.js
+// author: 法克
+// email: 法克@163.com
+// MIT license
 
 'use strict';
 
