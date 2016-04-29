@@ -16,7 +16,7 @@ import * as util from './util.js';
  * @param {Object} protoProps 原型方法对象
  * @return {Function}
  */
-const fork = protoProps => {
+export const fork = protoProps => {
     let parent = this;
     let child = function (...args) {
         parent.apply(this, args);
@@ -39,5 +39,3 @@ const fork = protoProps => {
 
     return child;
 };
-
-export { fork };

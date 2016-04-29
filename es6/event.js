@@ -16,7 +16,7 @@ let eventSplitter = /\s+/;
  * @param {Function} handle 事件处理程序
  * @param {Object} context 上下文
  */
-const addEventListener = (eventName, handle, context) => {
+export const addEventListener = (eventName, handle, context) => {
     if (!eventName) return this;
 
     // 支持以空格分隔的事件名
@@ -34,15 +34,13 @@ const addEventListener = (eventName, handle, context) => {
     return this;
 };
 
-export { addEventListener };
-
 /**
  * 删除事件和事件处理程序
  *
  * @param {String} eventName 事件名
  * @param {Function} handle 事件处理程序
  */
-const removeEventListener = (eventName, handle) => {
+export const removeEventListener = (eventName, handle) => {
     if (!this._events) return this;
 
     // 如果不存在一个参数，则清空所有事件
@@ -72,9 +70,7 @@ const removeEventListener = (eventName, handle) => {
     return this;
 };
 
-export { removeEventListener };
-
-const trigger = (eventName, ...args) => {
+export const trigger = (eventName, ...args) => {
     if (!this._events || !eventName) return this;
 
     let eventNames = eventName.split(eventSplitter), events, handle, context;
@@ -93,9 +89,7 @@ const trigger = (eventName, ...args) => {
     return this;
 };
 
-export { trigger };
-
-const once = (eventName, handle, context) => {
+export const once = (eventName, handle, context) => {
     let waveHandle = (...args) => {
         removeEventListener(eventName, waveHandle);
         handle.apply(context, args);
@@ -103,8 +97,3 @@ const once = (eventName, handle, context) => {
 
     return addEventListener(eventName, waveHandle, context);
 };
-
-export { once };
-
-
-

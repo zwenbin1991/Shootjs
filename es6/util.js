@@ -20,7 +20,7 @@ const eventSplitter = /\s+/;
  *         default => 0;
  * @return {Function}
  */
-const each = (callback, sign = 0) => {
+export const each = (callback, sign = 0) => {
     return array => {
         let checkArray = isArray(array);
         let solid = checkArray ? array : Object.keys(array), key, value;
@@ -35,15 +35,13 @@ const each = (callback, sign = 0) => {
     };
 };
 
-export { each };
-
 /**
  * 扩展
  *
  * @param {Object} target 源对象
  * @return {Boolean}
  */
-const extend = (target, ...copys) => {
+export const extend = (target, ...copys) => {
     let iteratee = each(object => {
         for (let key in object) target[key] = object[key];
     });
@@ -53,8 +51,6 @@ const extend = (target, ...copys) => {
     return target;
 };
 
-export { extend };
-
 /**
  * 上下文代理
  *
@@ -62,23 +58,19 @@ export { extend };
  * @param {Function} callback 回调函数
  * @return {Function}
  */
-const proxy = (context, callback, ...args) =>
+export const proxy = (context, callback, ...args) =>
     (...params) =>
         callback.apply(context, args.concat(params));
-
-export { proxy };
 
 /**
  * 生成唯一值
  */
-const unique = () => {
+export const unique = () => {
     let idCount = 0;
 
     return prefix =>
         prefix ? prefix + (++idCount) : ++idCount;
 };
-
-export const uniqueId = unique();
 
 /**
  * 获取类型
@@ -86,10 +78,8 @@ export const uniqueId = unique();
  * @param {Type} type 值
  * @return {Boolean}
  */
-const getType = type =>
+export const getType = type =>
     toString.call(type).slice(8, -1).toLowerCase();
-
-export { getType };
 
 /**
  * 是否是数组
@@ -97,10 +87,8 @@ export { getType };
  * @param {Array} array 数组
  * @return {Boolean}
  */
-const isArray = array =>
+export const isArray = array =>
     getType(array) === 'array';
-
-export { isArray };
 
 /**
  * 是否是纯对象
@@ -108,10 +96,8 @@ export { isArray };
  * @param {Object} object 纯对象
  * @return {Boolean}
  */
-const isPlainObject = object =>
+export const isPlainObject = object =>
     typeof object === 'object' && !isArray(object) && object != window && !object.nodeType;
-
-export { isPlainObject };
 
 /**
  * 是否是字符串
@@ -119,10 +105,8 @@ export { isPlainObject };
  * @param {String} string 字符串
  * @return {Boolean}
  */
-const isString = string =>
+export const isString = string =>
     getType(string) === 'string';
-
-export { isString };
 
 /**
  * 是否为空
@@ -130,15 +114,13 @@ export { isString };
  * @param {Type} type 值
  * @return {Boolean}
  */
-const isNothing = type =>
+export const isNothing = type =>
     type === void 0 || type === null;
-
-export { isNothing };
 
 /**
  * 比较值是否相等
  */
-const isEqual = (a, b) => {
+export const isEqual = (a, b) => {
     // 简单类型比较
     // 注意 0、-0的比较
     if (a === b) return a !== 0 || 1 / a === 1 / b;
@@ -172,5 +154,3 @@ const isEqual = (a, b) => {
 
     return false;
 };
-
-export { isEqual };

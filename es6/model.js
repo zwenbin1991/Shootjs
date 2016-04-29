@@ -9,7 +9,7 @@ import util from './util.js';
 import event from './event.js';
 import { fork } from './fork.js';
 
-const Model = attributes => {
+export const Model = attributes => {
     this.mid = util.uniqueId('m');
     this.attributes = util.extend(this.defaultAttributes, attributes || {});
     this.set(attributes);
@@ -78,5 +78,3 @@ util.extend(Model.prototype, event, {
         return this.set(attr, util.extend({}, option, { unset: true }))
     }
 });
-
-export { Model };
