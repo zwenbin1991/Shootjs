@@ -1,11 +1,44 @@
-扩展backbone功能
-1、自动重载view的render函数；
-2、view执行时序
-3、提供一些可通用的view
+ajax步骤：
+概念：通过js内置的xmlhttprequest对象发送一个http请求的组件
+1、实例化XMLHttpRequest对象
+    XMLHttpRequest();
 
-backbone的view功能
-1、设定el和tagname
-2、设置template
-3、设置事件监听器
-4、设置初始化函数，连接collection和model
-5、render，将数据渲染到template中
+2、创建一个请求
+    var xhr = new XMLHttpRequest();
+    xhr.open(type, url, isAsync, username, password);
+    @param：请求类型、请求地址、是否异步、请求验证
+
+3、设置请求头
+    xhr.setRequestHeader(name, value);
+    例如 设置请求过程异步的X-Requested-With: XMLHttpRequest，数据编码方式 application/x-www-form-urlencoded，浏览器支持的mime类型 accept
+
+4、发送请求前设置beforeSend函数，用来过滤一些操作，如果不符合，则中断xhr xhr.abort()
+
+5、通过setTimeout控制ajax过程是否超时，如果超时，则中断xhr xhr.abort()
+
+6、提供序列化数据功能，针对用户提供各种类型的数据，比如单字符串、逗号分隔字符串、数组、纯对象
+
+7、发送请求
+    xhr.send(data);
+    @param: 发送的数据 String key1=value1&key2=value2
+
+8、监听请求过程中的状态变化
+    xhr.onreadystatechange
+    readyState==4
+    status==200-300、0（请求本地资源）
+    (1)、分析响应类型，xhr.responseType，如果是arraybuffer或者blob代表的是二进制资源类型，则返回结果应该调用xhr.response，反之则是普通文本或者xml; responseText、responseXML
+    (2)、如果是普通文本则得到mime响应头，xhr.getResponseHeader('content-type')，转换成dataType，
+        dataType是普通文本或者html或者xml直接使用responseText、responseXML
+                是json 需调用JSON.parse
+                是script 需使用eval解析 (1, eval)(responseText)
+    (3)、转换过程中设置异常处理，并且设置异常错误通知函数用来提高库的健壮性
+
+分解出这个ajax各个部分，所以开始设计ajax库
+    核心是本着提供简单、合理、可维护、少依赖的api；
+
+    设计步骤
+        1、由于发送请求需要传入多个参数，使用对象传入，好处是无需知道传入参数的位置，体现了api设计的简单性；
+        2、不要使用需要传入一些控制功能的参数，性质一样，但是参数名不一样的，体现了api设计的合理；
+        3、使用模块化进行管理，设置导出到外部调用的接口，内部使用要对外禁止调用，体现了api设计的可维护；
+        4、尽量少依赖第三方库；
+

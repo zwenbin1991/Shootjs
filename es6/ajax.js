@@ -38,7 +38,7 @@ const initializeAjax = function () {
 };
 
 export const ajax = option => {
-    let ajaxConfig = util.extend({}, __AJAX__CONSTANTS__, option);
+    let ajaxOption = util.extend({}, __AJAX__CONSTANTS__, option);
 
 };
 
