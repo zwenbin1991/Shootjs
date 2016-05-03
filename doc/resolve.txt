@@ -3,26 +3,24 @@ ajax步骤：
 1、实例化XMLHttpRequest对象
     XMLHttpRequest();
 
-2、创建一个请求
+2、提供序列化数据功能，针对用户提供各种类型的数据，比如单字符串、逗号分隔字符串、数组、纯对象
+    如果是get请求，将数据append到url后面使用?隔离
+    如果是post，则将data解析成字符串
+
+3、创建一个请求
     var xhr = new XMLHttpRequest();
     xhr.open(type, url, isAsync, username, password);
     @param：请求类型、请求地址、是否异步、请求验证
 
-3、设置请求头
+4、设置请求头
     xhr.setRequestHeader(name, value);
     例如 设置请求过程异步的X-Requested-With: XMLHttpRequest，数据编码方式 application/x-www-form-urlencoded，浏览器支持的mime类型 accept
 
-4、发送请求前设置beforeSend函数，用来过滤一些操作，如果不符合，则中断xhr xhr.abort()
+5、发送请求前设置beforeSend函数，用来过滤一些操作，如果不符合，则中断xhr xhr.abort()
 
-5、通过setTimeout控制ajax过程是否超时，如果超时，则中断xhr xhr.abort()
+6、通过setTimeout控制ajax过程是否超时，如果超时，则中断xhr xhr.abort()
 
-6、提供序列化数据功能，针对用户提供各种类型的数据，比如单字符串、逗号分隔字符串、数组、纯对象
-
-7、发送请求
-    xhr.send(data);
-    @param: 发送的数据 String key1=value1&key2=value2
-
-8、监听请求过程中的状态变化
+7、监听请求过程中的状态变化
     xhr.onreadystatechange
     readyState==4
     status==200-300、0（请求本地资源）
@@ -32,6 +30,10 @@ ajax步骤：
                 是json 需调用JSON.parse
                 是script 需使用eval解析 (1, eval)(responseText)
     (3)、转换过程中设置异常处理，并且设置异常错误通知函数用来提高库的健壮性
+
+8、发送请求
+    xhr.send(data);
+    @param: 发送的数据 String key1=value1&key2=value2
 
 分解出这个ajax各个部分，所以开始设计ajax库
     核心是本着提供简单、合理、可维护、少依赖的api；
