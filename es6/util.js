@@ -42,7 +42,7 @@ export const each = (callback, sign = 0) => {
  */
 export const extend = (target, ...copys) => {
     let iteratee = each(object => {
-        for (let key in object) target[key] = object[key];
+        for (let key in object)  object[key] !== void 0 && (target[key] = object[key]);
     });
 
     iteratee(copys);
